@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  screenshot:
+    build: .
+    working_dir: /app
+    shm_size: 1gb #512M
+    # just run the container doing nothing
+    entrypoint: ["sh", "-c", "sleep infinity"]
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3018
+      - 9229:9229
+    command: node --inspect=0.0.0.0:9229 src/index.js
