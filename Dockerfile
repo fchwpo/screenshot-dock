@@ -19,6 +19,12 @@ WORKDIR /app
 
 RUN pwd
 
+# Dont download Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = true
+
+# Set ENV to production
+ENV NODE_ENV production
+
 # Install Node Modules
 RUN npm i
 
@@ -35,7 +41,5 @@ RUN npm run build
 # RUN ls /home/pptruser
 
 # USER pptruser
-
-ENV NODE_ENV production
 
 EXPOSE 3018
