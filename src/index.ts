@@ -1,4 +1,7 @@
 import { capture } from './screenshot'
+import { setScreenshotStatus } from './utils/serverRequests';
+import * as dotenv from 'dotenv'
+dotenv.config();
 
 //temp file to generate screenshots
 const urls = [
@@ -33,17 +36,31 @@ async function cronProcess() {
 	let ssOptions = {};
 	try{
 		ssOptions = JSON.parse(urlResponseObj.ssOptions) || {}
-	} catch(e){}
-	const urlsToCapture = websiteLinks ? websiteLinks.split(","): [];
-	promiseArr = urlsToCapture.map((url) => capture(url, ssOptions))
-	await Promise.all(promiseArr)
+		const urlsToCapture = websiteLinks ? websiteLinks.split(","): [];
+		promiseArr = urlsToCapture.map((url) => capture(url, ssOptions))
+		const imageUrls = await Promise.all(promiseArr)
+		await setScreenshotStatus({
+			success: true,
+			errorMessage: '',
+			id: urlResponseObj.id,
+			imageUrls: imageUrls.join(',')
+		})
+	} catch(e){
+		await setScreenshotStatus({
+			success: false,
+			errorMessage: e,
+			id: urlResponseObj.id
+		})
+	}
 }
 
 (function (){
 	const intervalTime = process.env.CRON_INTERVAL
 		? parseInt(process.env.CRON_INTERVAL)
 		: 60000
+
+	console.log(intervalTime, process.env);
 	setTimeout(() => {
 		cronProcess();
-	}, intervalTime);
+	}, 4000);
 })()
