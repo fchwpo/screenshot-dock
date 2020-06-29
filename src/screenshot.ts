@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 import { autoScroll } from "./utils/autoScroll";
 
 
-async function generate(browserInst: Browser, url:string): Promise<void> {
+async function generate(browserInst: Browser, url:string, options: object): Promise<void> {
 	const newPage = await browserInst.newPage();
 	await newPage.goto(url, {
 		waitUntil: 'networkidle0'
@@ -15,13 +15,15 @@ async function generate(browserInst: Browser, url:string): Promise<void> {
 	await newPage.screenshot({
 		path: screenshotPath,
 		fullPage: true,
-		type: 'png'
+		type: 'png',
+		...options
 	})
 	console.log(`Generated Screenshot for ${url} \n ${screenshotPath}`)
 }
 
-export async function capture(url: string): Promise<void> {
+//change options to predefined type
+export async function capture(url: string, options: object): Promise<void> {
 	const browserInst = await getBrowserInstance({});
-	console.log('Started for URL', url)
-	generate(browserInst, url);
+	console.log('Started for URL', url, options)
+	generate(browserInst, url, options);
 }
