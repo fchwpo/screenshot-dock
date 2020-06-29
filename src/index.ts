@@ -25,7 +25,7 @@ const urlResponseObj = {
 	ssAllocationTstamp: '0000-00-00 00:00:00',
 };
 
-(async function () {
+async function cronProcess() {
 	let promiseArr: any[] = []
 	let {
 		websiteLinks
@@ -37,4 +37,13 @@ const urlResponseObj = {
 	const urlsToCapture = websiteLinks ? websiteLinks.split(","): [];
 	promiseArr = urlsToCapture.map((url) => capture(url, ssOptions))
 	await Promise.all(promiseArr)
+}
+
+(function (){
+	const intervalTime = process.env.CRON_INTERVAL
+		? parseInt(process.env.CRON_INTERVAL)
+		: 60000
+	setTimeout(() => {
+		cronProcess();
+	}, intervalTime);
 })()
