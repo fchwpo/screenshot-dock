@@ -1,7 +1,6 @@
+import './setEnv'
 import { capture } from './screenshot'
 import { setScreenshotStatus } from './utils/serverRequests';
-import * as dotenv from 'dotenv'
-dotenv.config();
 
 //temp file to generate screenshots
 const urls = [
